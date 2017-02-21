@@ -955,6 +955,7 @@ class ShellTest(testtools.TestCase):
         service = mock.Mock()
         args = {
             'profile': 'test_profile',
+            'profile_only': 'false',
             'name': 'CLUSTER1',
             'metadata': ['user=demo'],
             'timeout': 100,
@@ -962,6 +963,7 @@ class ShellTest(testtools.TestCase):
         attrs = copy.deepcopy(args)
         attrs['metadata'] = {'user': 'demo'}
         attrs['profile_id'] = 'test_profile'
+        attrs['profile_only'] = False
         del attrs['profile']
         args = self._make_args(args)
         args.id = 'CID'
