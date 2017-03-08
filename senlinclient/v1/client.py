@@ -344,6 +344,14 @@ class Client(object):
         """
         return self.service.delete_node(node, ignore_missing)
 
+    def remove_node(self, node, **params):
+        """Remove node from senlin to nova instance
+
+        Doc link:
+        http://developer.openstack.org/api-ref-clustering-v1.html#nodeAction
+        """
+        return self.service.remove_node(node, **params)
+
     def check_node(self, node, **params):
         """Check node's health status
 
