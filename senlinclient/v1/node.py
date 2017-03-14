@@ -354,6 +354,62 @@ class RemoveNode(command.Command):
                   % {'nid': nid, 'action': resp['action']})
 
 
+class SetProtectNode(command.Command):
+    """Set the node(s) to protected status, then node can't be delete, recover
+    and check.
+    """
+    log = logging.getLogger(__name__ + ".SetProtectNode")
+
+    def get_parser(self, prog_name):
+        parser = super(SetProtectNode, self).get_parser(prog_name)
+        parser.add_argument(
+            'node',
+            metavar='<node>',
+            nargs='+',
+            help=_('ID or name of node(s) to set protect.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        senlin_client = self.app.client_manager.clustering
+        for nid in parsed_args.node:
+            try:
+                resp = senlin_client.set_protect_node(nid)
+            except sdk_exc.ResourceNotFound:
+                raise exc.CommandError(_('Node not found: %s') % nid)
+            print('Node set protect request on node %(nid)s is accepted by '
+                  'action %(action)s.'
+                  % {'nid': nid, 'action': resp['action']})
+
+
+class RemoveProtectNode(command.Command):
+    """Remove the protected status of the node(s)."""
+    log = logging.getLogger(__name__ + ".RemoveProtectNode")
+
+    def get_parser(self, prog_name):
+        parser = super(RemoveProtectNode, self).get_parser(prog_name)
+        parser.add_argument(
+            'node',
+            metavar='<node>',
+            nargs='+',
+            help=_('ID or name of node(s) to remove protect.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        senlin_client = self.app.client_manager.clustering
+        for nid in parsed_args.node:
+            try:
+                resp = senlin_client.remove_protect_node(nid)
+            except sdk_exc.ResourceNotFound:
+                raise exc.CommandError(_('Node not found: %s') % nid)
+            print('Node remove protect request on node %(nid)s is accepted by '
+                  'action %(action)s.'
+                  % {'nid': nid, 'action': resp['action']})
+
+
 class CheckNode(command.Command):
     """Check the node(s)."""
     log = logging.getLogger(__name__ + ".CheckNode")

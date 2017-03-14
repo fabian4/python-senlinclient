@@ -368,6 +368,22 @@ class Client(object):
         """
         return self.service.remove_node(node, **params)
 
+    def set_protect_node(self, node, **params):
+        """Set the node(s) to protected status
+
+        Doc link:
+        http://developer.openstack.org/api-ref-clustering-v1.html#nodeAction
+        """
+        return self.service.set_protect_node(node, **params)
+
+    def remove_protect_node(self, node, **params):
+        """Remove protected status of the node(s)
+
+        Doc link:
+        http://developer.openstack.org/api-ref-clustering-v1.html#nodeAction
+        """
+        return self.service.remove_protect_node(node, **params)
+
     def check_node(self, node, **params):
         """Check node's health status
 
