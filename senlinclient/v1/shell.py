@@ -589,6 +589,42 @@ def do_cluster_delete(service, args):
         utils.print_action_result(rid, res)
 
 
+@utils.arg('id', metavar='<CLUSTER>', nargs='+',
+           help=_('Name or ID of cluster(s) to suspend.'))
+def do_cluster_suspend(service, args):
+    """Suspend a cluster(s)."""
+    show_deprecated('senlin cluster-suspend', 'openstack cluster suspend')
+
+    result = {}
+    for cid in args.id:
+        try:
+            cluster = service.suspend_cluster(cid)
+            result[cid] = ('OK', cluster.location.split('/')[-1])
+        except Exception as ex:
+            result[cid] = ('ERROR', six.text_type(ex))
+
+    for rid, res in result.items():
+        utils.print_action_result(rid, res)
+
+
+@utils.arg('id', metavar='<CLUSTER>', nargs='+',
+           help=_('Name or ID of cluster(s) to suspend.'))
+def do_cluster_resume(service, args):
+    """Resume a cluster(s)."""
+    show_deprecated('senlin cluster-resume', 'openstack cluster resume')
+
+    result = {}
+    for cid in args.id:
+        try:
+            cluster = service.resume_cluster(cid)
+            result[cid] = ('OK', cluster.location.split('/')[-1])
+        except Exception as ex:
+            result[cid] = ('ERROR', six.text_type(ex))
+
+    for rid, res in result.items():
+        utils.print_action_result(rid, res)
+
+
 def _run_script(node_id, addr, net, addr_type, port, user, ipv6, identity_file,
                 script, options, output=None):
     version = 6 if ipv6 else 4

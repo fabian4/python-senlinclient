@@ -323,6 +323,68 @@ class DeleteCluster(command.Command):
             senlin_utils.print_action_result(rid, res)
 
 
+class SuspendCluster(command.Command):
+    """Suspend the cluster(s)."""
+
+    log = logging.getLogger(__name__ + ".SuspendCluster")
+
+    def get_parser(self, prog_name):
+        parser = super(SuspendCluster, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster',
+            metavar='<cluster>',
+            nargs='+',
+            help=_('Name or ID of cluster(s) to suspend')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        senlin_client = self.app.client_manager.clustering
+
+        result = {}
+        for cid in parsed_args.cluster:
+            try:
+                cluster = senlin_client.suspend_cluster(cid)
+                result[cid] = ('OK', cluster.location.split('/')[-1])
+            except Exception as ex:
+                result[cid] = ('ERROR', six.text_type(ex))
+
+        for rid, res in result.items():
+            senlin_utils.print_action_result(rid, res)
+
+
+class ResumeCluster(command.Command):
+    """Resume the cluster(s)."""
+
+    log = logging.getLogger(__name__ + ".SuspendCluster")
+
+    def get_parser(self, prog_name):
+        parser = super(ResumeCluster, self).get_parser(prog_name)
+        parser.add_argument(
+            'cluster',
+            metavar='<cluster>',
+            nargs='+',
+            help=_('Name or ID of cluster(s) to resume')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        senlin_client = self.app.client_manager.clustering
+
+        result = {}
+        for cid in parsed_args.cluster:
+            try:
+                cluster = senlin_client.resume_cluster(cid)
+                result[cid] = ('OK', cluster.location.split('/')[-1])
+            except Exception as ex:
+                result[cid] = ('ERROR', six.text_type(ex))
+
+        for rid, res in result.items():
+            senlin_utils.print_action_result(rid, res)
+
+
 class ResizeCluster(command.Command):
     """Resize a cluster."""
 
