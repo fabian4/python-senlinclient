@@ -1248,6 +1248,25 @@ def do_node_update(service, args):
 
 
 @utils.arg('id', metavar='<NODE>', nargs='+',
+           help=_('Name or ID of node(s) to remove'))
+def do_node_remove(service, args):
+    """Remove the node(s) from senlin to be nova server"""
+    show_deprecated('senlin node-remove', 'openstack cluster node remove')
+    failure_count = 0
+
+    for nid in args.id:
+        try:
+            service.remove_node(nid)
+        except exc.HTTPNotFound:
+            failure_count += 1
+            print('Node id "%s" not found' % nid)
+    if failure_count > 0:
+        msg = _('Failed to remove some of the specified nodes.')
+        raise exc.CommandError(msg)
+    print('Request accepted')
+
+
+@utils.arg('id', metavar='<NODE>', nargs='+',
            help=_('ID of node(s) to check.'))
 def do_node_check(service, args):
     """Check the node(s)."""

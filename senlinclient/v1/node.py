@@ -327,6 +327,33 @@ class DeleteNode(command.Command):
             senlin_utils.print_action_result(rid, res)
 
 
+class RemoveNode(command.Command):
+    """Remove the node(s)"""
+    log = logging.getLogger(__name__ + ".RemoveNode")
+
+    def get_parser(self, prog_name):
+        parser = super(RemoveNode, self).get_parser(prog_name)
+        parser.add_argument(
+            'node',
+            metavar='<node>',
+            nargs='+',
+            help=_('ID or name of node(s) to remove.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        senlin_client = self.app.client_manager.clustering
+        for nid in parsed_args.node:
+            try:
+                resp = senlin_client.remove_node(nid)
+            except sdk_exc.ResourceNotFound:
+                raise exc.CommandError(_('Node not found: %s') % nid)
+            print('Node remove request on node %(nid)s is accepted by '
+                  'action %(action)s.'
+                  % {'nid': nid, 'action': resp['action']})
+
+
 class CheckNode(command.Command):
     """Check the node(s)."""
     log = logging.getLogger(__name__ + ".CheckNode")
