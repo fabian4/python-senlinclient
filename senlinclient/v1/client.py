@@ -198,6 +198,22 @@ class Client(object):
         """
         return self.service.delete_cluster(cluster, ignore_missing)
 
+    def suspend_cluster(self, cluster, **attrs):
+        """Suspend cluster
+
+        Doc link:
+        http://developer.openstack.org/api-ref-clustering-v1.html#deleteCluster
+        """
+        return self.service.suspend_cluster(cluster, **attrs)
+
+    def resume_cluster(self, cluster, **attrs):
+        """Resume cluster
+
+        Doc link:
+        http://developer.openstack.org/api-ref-clustering-v1.html#deleteCluster
+        """
+        return self.service.resume_cluster(cluster, **attrs)
+
     def cluster_add_nodes(self, cluster, nodes):
         """Add a node to cluster
 
