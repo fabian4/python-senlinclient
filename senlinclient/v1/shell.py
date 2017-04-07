@@ -1303,6 +1303,48 @@ def do_node_remove(service, args):
 
 
 @utils.arg('id', metavar='<NODE>', nargs='+',
+           help=_('ID of node(s) to protect.'))
+def do_node_protect_set(service, args):
+    """Set the node(s) to protected status, then node can't be delete, recover
+    and check.
+    """
+    show_deprecated('senlin node-protect-set',
+                    'openstack cluster node protect set')
+    failure_count = 0
+
+    for nid in args.id:
+        try:
+            service.set_protect_node(nid)
+        except exc.HTTPNotFound:
+            failure_count += 1
+            print('Node id "%s" not found' % nid)
+    if failure_count > 0:
+        msg = _('Failed to set protect some of the specified nodes.')
+        raise exc.CommandError(msg)
+    print('Request accepted')
+
+
+@utils.arg('id', metavar='<NODE>', nargs='+',
+           help=_('ID of node(s) to protect.'))
+def do_node_protect_remove(service, args):
+    """Remove protected status of the node(s)."""
+    show_deprecated('senlin node-protect-remove',
+                    'openstack cluster node protect remove')
+    failure_count = 0
+
+    for nid in args.id:
+        try:
+            service.remove_protect_node(nid)
+        except exc.HTTPNotFound:
+            failure_count += 1
+            print('Node id "%s" not found' % nid)
+    if failure_count > 0:
+        msg = _('Failed to remove protect some of the specified nodes.')
+        raise exc.CommandError(msg)
+    print('Request accepted')
+
+
+@utils.arg('id', metavar='<NODE>', nargs='+',
            help=_('ID of node(s) to check.'))
 def do_node_check(service, args):
     """Check the node(s)."""
