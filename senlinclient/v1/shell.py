@@ -16,6 +16,7 @@ import threading
 import time
 
 from openstack import exceptions as sdk_exc
+from oslo_utils import strutils
 import six
 
 from senlinclient.common import exc
