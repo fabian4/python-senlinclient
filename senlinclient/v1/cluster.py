@@ -355,23 +355,20 @@ class SuspendCluster(command.Command):
     def take_action(self, parsed_args):
         self.log.debug("take_action(%s)", parsed_args)
         senlin_client = self.app.client_manager.clustering
-
-        result = {}
         for cid in parsed_args.cluster:
             try:
-                cluster = senlin_client.suspend_cluster(cid)
-                result[cid] = ('OK', cluster.location.split('/')[-1])
-            except Exception as ex:
-                result[cid] = ('ERROR', six.text_type(ex))
-
-        for rid, res in result.items():
-            senlin_utils.print_action_result(rid, res)
+                resp = senlin_client.suspend_cluster(cid)
+            except sdk_exc.ResourceNotFound:
+                raise exc.CommandError(_('Cluster not found: %s') % cid)
+            print('Cluster suspend request on cluster %(cid)s is accepted by '
+                  'action %(action)s.'
+                  % {'cid': cid, 'action': resp['action']})
 
 
 class ResumeCluster(command.Command):
     """Resume the cluster(s)."""
 
-    log = logging.getLogger(__name__ + ".SuspendCluster")
+    log = logging.getLogger(__name__ + ".ResumeCluster")
 
     def get_parser(self, prog_name):
         parser = super(ResumeCluster, self).get_parser(prog_name)
@@ -386,17 +383,14 @@ class ResumeCluster(command.Command):
     def take_action(self, parsed_args):
         self.log.debug("take_action(%s)", parsed_args)
         senlin_client = self.app.client_manager.clustering
-
-        result = {}
         for cid in parsed_args.cluster:
             try:
-                cluster = senlin_client.resume_cluster(cid)
-                result[cid] = ('OK', cluster.location.split('/')[-1])
-            except Exception as ex:
-                result[cid] = ('ERROR', six.text_type(ex))
-
-        for rid, res in result.items():
-            senlin_utils.print_action_result(rid, res)
+                resp = senlin_client.resume_cluster(cid)
+            except sdk_exc.ResourceNotFound:
+                raise exc.CommandError(_('Cluster not found: %s') % cid)
+            print('Cluster resume request on cluster %(cid)s is accepted by '
+                  'action %(action)s.'
+                  % {'cid': cid, 'action': resp['action']})
 
 
 class ResizeCluster(command.Command):

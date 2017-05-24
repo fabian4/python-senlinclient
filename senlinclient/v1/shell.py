@@ -595,16 +595,10 @@ def do_cluster_suspend(service, args):
     """Suspend a cluster(s)."""
     show_deprecated('senlin cluster-suspend', 'openstack cluster suspend')
 
-    result = {}
     for cid in args.id:
-        try:
-            cluster = service.suspend_cluster(cid)
-            result[cid] = ('OK', cluster.location.split('/')[-1])
-        except Exception as ex:
-            result[cid] = ('ERROR', six.text_type(ex))
-
-    for rid, res in result.items():
-        utils.print_action_result(rid, res)
+        resp = service.suspend_cluster(cid)
+        print('Cluster suspend request on cluster %(cid)s is accepted by '
+              'action %(action)s.' % {'cid': cid, 'action': resp['action']})
 
 
 @utils.arg('id', metavar='<CLUSTER>', nargs='+',
@@ -613,16 +607,10 @@ def do_cluster_resume(service, args):
     """Resume a cluster(s)."""
     show_deprecated('senlin cluster-resume', 'openstack cluster resume')
 
-    result = {}
     for cid in args.id:
-        try:
-            cluster = service.resume_cluster(cid)
-            result[cid] = ('OK', cluster.location.split('/')[-1])
-        except Exception as ex:
-            result[cid] = ('ERROR', six.text_type(ex))
-
-    for rid, res in result.items():
-        utils.print_action_result(rid, res)
+        resp = service.resume_cluster(cid)
+        print('Cluster resume request on cluster %(cid)s is accepted by '
+              'action %(action)s.' % {'cid': cid, 'action': resp['action']})
 
 
 def _run_script(node_id, addr, net, addr_type, port, user, ipv6, identity_file,
