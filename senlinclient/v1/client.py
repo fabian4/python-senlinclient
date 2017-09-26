@@ -384,6 +384,11 @@ class Client(object):
         """
         return self.service.remove_protect_node(node, **params)
 
+    def reset_node_state(self, node, **params):
+        """Reset state node status
+        """
+        return self.service.reset_node_state(node, **params)
+
     def check_node(self, node, **params):
         """Check node's health status
 

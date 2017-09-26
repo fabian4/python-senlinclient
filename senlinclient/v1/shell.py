@@ -1344,6 +1344,26 @@ def do_node_protect_remove(service, args):
 
 
 @utils.arg('id', metavar='<NODE>', nargs='+',
+           help=_('ID of node(s) to reset state.'))
+def do_node_reset_state(service, args):
+    """Reset state node status."""
+    show_deprecated('senlin node-reset-state',
+                    'openstack cluster node reset state')
+    failure_count = 0
+
+    for nid in args.id:
+        try:
+            service.reset_node_state(nid)
+        except exc.HTTPNotFound:
+            failure_count += 1
+            print('Node id "%s" not found' % nid)
+    if failure_count > 0:
+        msg = _('Failed to reset node some of the specified nodes.')
+        raise exc.CommandError(msg)
+    print('Request accepted')
+
+
+@utils.arg('id', metavar='<NODE>', nargs='+',
            help=_('ID of node(s) to check.'))
 def do_node_check(service, args):
     """Check the node(s)."""
