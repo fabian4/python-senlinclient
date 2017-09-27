@@ -410,6 +410,33 @@ class RemoveProtectNode(command.Command):
                   % {'nid': nid, 'action': resp['action']})
 
 
+class ResetNodeState(command.Command):
+    """Reset state node status."""
+    log = logging.getLogger(__name__ + ".RemoveProtectNode")
+
+    def get_parser(self, prog_name):
+        parser = super(ResetNodeState, self).get_parser(prog_name)
+        parser.add_argument(
+            'node',
+            metavar='<node>',
+            nargs='+',
+            help=_('ID or name of node(s) to reset state.')
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        senlin_client = self.app.client_manager.clustering
+        for nid in parsed_args.node:
+            try:
+                resp = senlin_client.reset_node_state(nid)
+            except sdk_exc.ResourceNotFound:
+                raise exc.CommandError(_('Node not found: %s') % nid)
+            print('Node reset state request on node %(nid)s is accepted by '
+                  'action %(action)s.'
+                  % {'nid': nid, 'action': resp['action']})
+
+
 class CheckNode(command.Command):
     """Check the node(s)."""
     log = logging.getLogger(__name__ + ".CheckNode")
