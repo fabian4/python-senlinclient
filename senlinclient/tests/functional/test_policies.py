@@ -12,6 +12,8 @@
 
 from senlinclient.tests.functional import base
 
+POLICY_NAME = "PC001"
+
 
 class PolicyTest(base.OpenStackClientTestBase):
     """Test for policies"""
@@ -21,3 +23,8 @@ class PolicyTest(base.OpenStackClientTestBase):
         policy_list = self.parser.listing(result)
         self.assertTableStruct(policy_list, ['id', 'name', 'type',
                                              'created_at'])
+
+    def test_policy_create(self):
+        result = self.policy_create(POLICY_NAME)
+        self.assertEqual(result['name'], POLICY_NAME)
+        self.addCleanup(self.policy_delete(result['id']))

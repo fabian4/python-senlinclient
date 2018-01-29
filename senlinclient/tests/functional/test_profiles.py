@@ -12,6 +12,8 @@
 
 from senlinclient.tests.functional import base
 
+PROFILE_NAME = "PF001"
+
 
 class ProfileTest(base.OpenStackClientTestBase):
     """Test for profiles"""
@@ -21,3 +23,8 @@ class ProfileTest(base.OpenStackClientTestBase):
         profile_list = self.parser.listing(result)
         self.assertTableStruct(profile_list, ['id', 'name', 'type',
                                               'created_at'])
+
+    def test_pofile_create(self):
+        result = self.profile_create(PROFILE_NAME)
+        self.assertEqual(result['name'], PROFILE_NAME)
+        self.addCleanup(self.profile_delete(result['id']))
